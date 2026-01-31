@@ -1,0 +1,46 @@
+---Create venv---
+MacOs python3 -m venv vene
+Windows: py/python -m venv venv
+
+----Activate----
+MacOS: source venv/bin/activate
+windows: ./venv/Scripts/activate
+
+
+---Install Flask---
+MacOS: pip3 install Flask
+Windows:pip install Flask
+
+
+----Save dependencies to TXT---
+MacOS: pip3 freeze > requirements.txt
+Windows: pip freeze > requirements.txt
+
+---Create Table----
+MacOS: sqlite3 file_name
+
+
+----Install SQLite---
+MacOS brew install SQLite (Install homebrew first)
+Windows: (command prompt )winget install SQLite.SQLite
+
+// starting a table //
+sqlite> CREATE TABLE (
+   ...> ); # created wrong so close it out with ");" #
+Error: in prepare, near "(": syntax error (1)
+
+// Correct way to create the table //
+sqlite> CREATE TABLE users (
+   ...> id INTEGER PRIMARY KEY AUTOINCREMENT,
+   ...> name TEXT NOT NULL,
+   ...> email TEXT UNIQUE,
+   ...> created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+   ...> );
+
+// Creates a better looking table //
+sqlite> .headers ON
+sqlite> .mode box 
+sqlite> SELECT * FROM users;
+
+// exit table & create tab on the side//
+.quit
