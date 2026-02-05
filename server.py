@@ -127,7 +127,6 @@ def delete_user(user_id):
     }),200
 
 
-@app.put("/api/users/<int:user_id>")
 def update_user():
     data = request.json()
     name = data.get("name")
@@ -147,35 +146,6 @@ def update_user():
 
 
 #-----------EXPENSES------------
-@app.get("/api/expense")
-def get_expenses():
-    conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row 
-    cursor = conn.cursor()
-    
-    cursor.execute(""" 
-        CREATE TABLE IF NOT EXISTS expenses(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            description TEXT NOT NULL,
-            amount REAL NOT NULL,
-            date TEXT NOT NULL,
-            category TEXT NOT NULL,
-            user_id INTEGER,
-            FOREIGN KEY(user_id) REFERENCES users(id)
-        ) 
-    """)
-
-    cursor.execute("SELECT * FROM expenses")
-    rows = cursor.fetchall()
-    conn.close()
-
-    return jsonify({
-        "success": True,
-        "message": "Successful",
-        "data": [dict(row) for row in rows]
-    }), 200
-
 
 @app.post("/api/expenses")
 def add_expense():
@@ -188,6 +158,12 @@ def add_expense():
     category = data.get("category")
     user_id = data.get("user_id")
 
+    if not data:
+        return jsonify({
+            "success": False,
+            "message": "No data found"
+        }), 400
+
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     cursor.execute("INSERT INTO expenses (title, description, amount, date, category, user_id) VALUES (?,?,?,?,?,?)", (title, description, amount, date, category, user_id))
@@ -199,6 +175,118 @@ def add_expense():
             "message": "Expense added successfully!"
         }), 201 
 
+
+@app.get("/api/expenses")
+def get_expenses():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row 
+    cursor = conn.cursor()
+    
+
+    cursor.execute("SELECT id,title,category,user_id  FROM expenses ")
+    row = cursor.fetchall()
+    
+    expenses =[]
+    for row in row:
+        expenses = {
+        "id":row["id"],
+        "title":row["title"], 
+        "category":row["category"],
+        "user_id":row["user_id"]
+        }
+
+    return jsonify({
+        "success": True,
+        "message": "Successful",
+        "data": expenses 
+    }), 200
+
+
+@app.get("/api/expense/<int:expense_id>")
+def info_expenses(expense_id):
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM expenses WHERE id=?",(expense_id,))
+    row =cursor.fetchone()
+    conn.close()
+    print(row)
+    #print(dict(row))
+
+    if not row:
+        return jsonify({
+            "success":False,
+            "message":"Not good"
+        }),404
+    
+    return jsonify({
+            "success":True,
+            "message":"good",
+            "data":dict(row)
+        }), 200
+
+@app.delete("/api/expenses/<int:expense_id>")
+def delete_expense(expense_id):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM expenses WHERE id=?", (expense_id,))
+
+    if not cursor.fetchone():
+        conn.close()
+
+        return jsonify({
+            "success":False,
+            "message":"Not found"
+        }), 404
+    
+    cursor.execute("DELETE FROM expenses WHERE id=?", (expense_id,))
+    conn.commit()
+    conn.close()
+
+    return jsonify({
+        "succes":True,
+        "message":"Deleted successfully!"
+    }),200
+
+
+
+@app.put("/api/expenses/<int:expense_id>")
+def update_expenses_id(expense_id):
+    data = request.get_json()
+    title = data.get("title")
+    description = data.get("description")
+    amount = data.get("amount")
+    date_str = data.get("date")
+    category = data.get("category")
+    user_id = data.get("user_id")
+    
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+           UPDATE expenses
+           SET title=?, description=?, amount=?, date=?, category=?, user_id=? 
+           WHERE id=?
+         """,(title, description, amount, date_str, category, user_id, expense_id))
+        
+        if cursor.rowcount == 0:
+            return jsonify({
+                "success":False,
+                "messgae": "Expense not found"}), 404
+        
+        conn.commit()
+        conn.close()
+    
+        return jsonify({
+           "success":True,
+           "message":"updated successfully"
+         }), 201
+    except sqlite3.IntergrityError as e:
+        return jsonify({"error":f"something went wrong: {str(e)}"}),400
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
     init_db()
