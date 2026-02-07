@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<div class="bg-primary text-white text-center py-5 mb-5 shadow">
+    <div class="container py-5">
+        <h1 class="display-4 fw-bold">Welcome to Flask FrontEnd</h1>
+        <p class="lead mb-4">Mastering dynamic web development with Python, Jinja2, and Bootstrap 5.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="/contact" class="btn btn-light btn-lg px-4 gap-3">Get in Touch</a>
+            <a href="/about" class="btn btn-outline-light btn-lg px-4">Learn More</a>
+        </div>
+    </div>
+</div>
+<div class="container px-4 py-5" id="featured-3">
+    <h2 class="pb-2 border-bottom text-center mb-5">Benefits of Flask</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-3 rounded-circle px-3 py-2">
+                <i class="bi bi-lightning-fill"></i>
+            </div>
+            <h3 class="fs-4">Fast Performance</h3>
+            <p>Lorem ipsum dolor sit amet consectetur.p>
+        </div>
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-3 rounded-circle px-3 py-2">
+                <i class="bi bi-phone"></i>
+            </div>
+            <h3 class="fs-4">Fully Responsive</h3>
+            <p>Lorem, ipsum dolor sit amet consectetur adipisicing..</p>
+        </div>
+        <div class="feature col text-center">
+            <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-primary bg-gradient text-white fs-2 mb-3 rounded-circle px-3 py-2">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            <h3 class="fs-4">Secure & Modern</h3>
+            <p>Lorem ipsum dolor sit.</p>
+        </div>
+    </div>
+</div>
+<div class="container mb-5">
+    <div class="p-5 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h2 class="display-6 fw-bold text-dark">About Our Project</h2>
+            <p class="col-md-8 fs-5 text-muted">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint sapiente reprehenderit aperiam atque quisquam rerum explicabo! Quidem, quasi. Excepturi fugit dignissimos, at autem maxime omnis asperiores a accusamus voluptates accusantium.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
